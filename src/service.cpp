@@ -17,13 +17,13 @@ void countdown_start(){
 
 void check_countdown(){
     if (timer.waiting()) {
-        Serial.print("Timer: ");
+        //Serial.print("Timer: ");
         timer_current_time = timer.stop() / 1000;
-        Serial.println(timer_current_time);
+        //Serial.println(timer_current_time);
         timer.restart();
     }
     if (timer.done()) {
-        Serial.println("Timer done!");
+        //Serial.println("Timer done!");
         countdown_start();
     } 
 }
