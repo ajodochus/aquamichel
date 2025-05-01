@@ -2,9 +2,11 @@
 #include <Arduino.h>
 
 
+
 // Function prototype
 unsigned long startTime;
 int countdownTime = 10000; 
+int timer_current_time = 0;
 Neotimer timer = Neotimer(countdownTime);
 
 void countdown_start(){
@@ -16,7 +18,8 @@ void countdown_start(){
 void check_countdown(){
     if (timer.waiting()) {
         Serial.print("Timer: ");
-        Serial.println(timer.stop() / 1000);
+        timer_current_time = timer.stop() / 1000;
+        Serial.println(timer_current_time);
         timer.restart();
     }
     if (timer.done()) {
