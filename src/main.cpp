@@ -1,24 +1,17 @@
 #include <Arduino.h>
-// Blink sketch for ESP32
+#include "component_led.h"
+#include "service.h"
 
-#define INTERNAL_LED 12  // Built-in LED is usually on GPIO 2
-
-const int redPin = 23;    // Red LED 
-const int greenPin = 22; // Green LED
 
 void setup() {
-  pinMode(INTERNAL_LED, OUTPUT);  // Set LED pin as output
-  pinMode(redPin, OUTPUT);
-  pinMode(greenPin, OUTPUT);
-  analogWrite(greenPin, 100);
-  analogWrite(redPin, 100);
   Serial.begin(9600);  // Start serial communication at 115200 baud rate
+  component_led_setup();
+  countdown_start();
 }
 
 void loop() {
-  Serial.println("Blinking LED...");  // Print message to serial monitor
-  digitalWrite(INTERNAL_LED, HIGH);  // Turn the LED on
-  delay(100);                  // Wait for 1 second
-  digitalWrite(INTERNAL_LED, LOW);   // Turn the LED off
-  delay(100);                  // Wait for 1 second
+  component_led_loop();
+  check_countdown();
+  delay(1000); // Delay for 1 second  
+
 }
