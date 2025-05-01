@@ -7,6 +7,10 @@
 
 SSD1306Wire display(0x3c, I2C_SDA, I2C_SCL); // I2C address 0x3c for 128x64 OLED display
 
+String display_first_line = "Connecting to WiFi...";
+String display_second_line = "Please wait...";
+String display_third_line = "";
+
 void display_setup(){ 
     display.init();
     display.flipScreenVertically();
@@ -15,10 +19,10 @@ void display_setup(){
     display.display();
 }
 
-void display_show_message(String second_line){
+void display_show_message(){
   display.clear();
-  display.drawString(0, 0, "first line");
-  display.drawString(0, 20, second_line);
-    display.drawString(0, 46, "third line");
+  display.drawString(0, 0, display_first_line);
+  display.drawString(0, 20, display_second_line);
+  display.drawString(0, 40, display_third_line);
   display.display();
 }

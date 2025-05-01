@@ -6,15 +6,16 @@
 
 void setup() {
   Serial.begin(9600);  // Start serial communication at 115200 baud rate
-  component_led_setup();
+  //component_led_setup();
   countdown_start();
   display_setup();
 }
 
 void loop() {
-  component_led_loop();
+  //component_led_loop();
   check_countdown();
-  
-  display_show_message(String(timer_current_time));
+  display_first_line = "timer";
+  display_second_line = timer_current_time;
+  display_show_message();
 
 }
