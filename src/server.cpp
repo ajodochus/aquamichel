@@ -6,6 +6,7 @@
 #include "component_display.h"
 #include "service.h"
 #include "index_html.h"
+#include "scale.h"
 // Declare the server object
 AsyncWebServer server(80);
 
@@ -44,6 +45,9 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   });
    server.on("/current_time", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(timer_current_time));
+  });
+  server.on("/current_weight", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", String(scale_current_weight));
   });
 
   server.begin();

@@ -9,7 +9,8 @@ const char index_html[] PROGMEM = R"rawliteral(
   <p>var1: %VALUE1%</p>
   <p>var2: %VALUE2%</p>
   
-    <p>Timer: <span id="current_time">...</span></p>
+  <p>Timer: <span id="current_time">...</span></p>
+  <p>Weight: <span id="current_weight">...</span></p>
 
     <script>
       setInterval(() => {
@@ -17,6 +18,11 @@ const char index_html[] PROGMEM = R"rawliteral(
           .then(response => response.text())
           .then(data => {
             document.getElementById("current_time").textContent = data;
+          });
+        fetch("/current_weight")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("current_weight").textContent = data;
           });
       }, 1000);
     </script>
