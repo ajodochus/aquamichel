@@ -5,34 +5,11 @@
 #include "server.h"
 #include "component_display.h"
 #include "service.h"
-
+#include "index_html.h"
 // Declare the server object
 AsyncWebServer server(80);
 
-// HTML page content
-const char index_html[] PROGMEM = R"rawliteral(
-<!DOCTYPE html>
-<html>
-<head><title>ESP32 Async WebServer</title></head>
-<body>
-  <h1>Aquamichel</h1>
-  <p>var1: %VALUE1%</p>
-  <p>var2: %VALUE2%</p>
-  
-    <p>Timer: <span id="current_time">...</span></p>
 
-    <script>
-      setInterval(() => {
-        fetch("/current_time")
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById("current_time").textContent = data;
-          });
-      }, 1000);
-    </script>
-</body>
-</html>
-)rawliteral";
 
 // Optional template processor
 String processor(const String& var) {
