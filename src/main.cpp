@@ -12,7 +12,7 @@ const char* password = config_password;  // Replace with your network credential
 
 void setup() {
   Serial.begin(9600);  // Start serial communication at 115200 baud rate
-  //component_led_setup();
+  component_led_setup();
   startWiFiAndServer(ssid, password);
   countdown_start();
   display_setup();
