@@ -4,9 +4,10 @@
 #include "component_display.h"
 #include "server.h"
 #include "scale.h"
+#include "config.h"
 
-const char* ssid = "33rn4";
-const char* password = "51141929344873172890";
+const char* ssid = config_ssid;  // Replace with your network credentials
+const char* password = config_password;  // Replace with your network credentials
 
 void setup() {
   Serial.begin(9600);  // Start serial communication at 115200 baud rate
