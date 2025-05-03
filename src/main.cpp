@@ -20,8 +20,7 @@ void setup() {
   component_push_button_setup();
   //scale_tare();
   //scale_get_weight();
-  //Serial.println(scale_current_weight);
-  //component_led_loop();
+
 
 }
 

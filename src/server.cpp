@@ -7,6 +7,7 @@
 #include "service.h"
 #include "index_html.h"
 #include "scale.h"
+#include "component_push_button.h"
 // Declare the server object
 AsyncWebServer server(80);
 String server_msg = "initialize server";
@@ -50,6 +51,9 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   });
   server.on("/current_weight", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(scale_current_weight));
+  });
+  server.on("/push_button_state", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", String(push_button_state));
   });
 
   server.begin();

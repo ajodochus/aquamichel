@@ -11,6 +11,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   
   <p>Timer: <span id="current_time">...</span></p>
   <p>Weight: <span id="current_weight">...</span></p>
+  <p>Push Button State: <span id="push_button_state">...</span></p>
 
     <script>
       setInterval(() => {
@@ -24,7 +25,12 @@ const char index_html[] PROGMEM = R"rawliteral(
           .then(data => {
             document.getElementById("current_weight").textContent = data;
           });
-      }, 1000);
+        fetch("/push_button_state")
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("push_button_state").textContent = data;
+          });
+      }, 500);
     </script>
 </body>
 </html>
