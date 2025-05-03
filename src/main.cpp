@@ -5,6 +5,7 @@
 #include "server.h"
 #include "scale.h"
 #include "config.h"
+#include "component_push_button.h"
 
 const char* ssid = config_ssid;  // Replace with your network credentials
 const char* password = config_password;  // Replace with your network credentials
@@ -16,6 +17,7 @@ void setup() {
   countdown_start();
   display_setup();
   scale_setup();
+  component_push_button_setup();
   //scale_tare();
   //scale_get_weight();
   //Serial.println(scale_current_weight);

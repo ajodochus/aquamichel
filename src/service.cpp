@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "component_display.h"
 #include "server.h"
+#include "component_push_button.h"
 
 
 // Function prototype
@@ -14,9 +15,15 @@ Neotimer timer = Neotimer(countdownTime);
 
 
 void service_loop() {
+    // pusch button handling
+    component_push_button_loop();
+
+    // display handling
     display_first_line = server_msg;
     timer_update_msg();
     display_second_line = String(timer_current_time);
+    display_third_line = push_button_state;
+
     display_show_message();
 }
 
