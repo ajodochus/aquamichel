@@ -15,7 +15,7 @@ void setup() {
   startWiFiAndServer(ssid, password);
   countdown_start();
   display_setup();
- scale_setup();
+  scale_setup();
   //scale_tare();
   //scale_get_weight();
   //Serial.println(scale_current_weight);
@@ -24,9 +24,5 @@ void setup() {
 }
 
 void loop() {
-  //component_led_loop();
-  check_countdown();
-  display_second_line = timer_current_time;
-  display_show_message();
-  scale_get_weight();
+ service_loop();
 }

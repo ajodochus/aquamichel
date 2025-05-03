@@ -9,7 +9,7 @@
 #include "scale.h"
 // Declare the server object
 AsyncWebServer server(80);
-
+String server_msg = "initialize server";
 
 
 // Optional template processor
@@ -26,6 +26,7 @@ String processor(const String& var) {
 // Start Wi-Fi and initialize the web server
 void startWiFiAndServer(const char* ssid, const char* password) {
   Serial.println("Connecting to WiFi...");
+  server_msg = "Connecting to WiFi...";
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -37,7 +38,8 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   Serial.println("WiFi connected!");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-    display_first_line = WiFi.localIP().toString();
+    server_msg = WiFi.localIP().toString();
+
 
   // Define server routes
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
