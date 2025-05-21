@@ -6,6 +6,7 @@
 #include "scale.h"
 #include "config.h"
 #include "component_push_button.h"
+#include "watersensor.h"
 
 const char* ssid = config_ssid;  // Replace with your network credentials
 const char* password = config_password;  // Replace with your network credentials
@@ -18,6 +19,7 @@ void setup() {
   display_setup();
   scale_setup();
   component_push_button_setup();
+  watersensor_setup();
   //scale_tare();
   //scale_get_weight();
 
@@ -26,4 +28,5 @@ void setup() {
 
 void loop() {
  service_loop();
+delay(2000);
 }

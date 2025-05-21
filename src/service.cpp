@@ -3,6 +3,7 @@
 #include "component_display.h"
 #include "server.h"
 #include "component_push_button.h"
+#include "watersensor.h"
 
 
 // Function prototype
@@ -15,7 +16,7 @@ Neotimer timer = Neotimer(countdownTime);
 
 
 void service_loop() {
-    // pusch button handling
+    // push button handling
     component_push_button_loop();
 
     // display handling
@@ -25,6 +26,7 @@ void service_loop() {
     display_third_line = push_button_state;
 
     display_show_message();
+    watersensor_loop();
 }
 
 
