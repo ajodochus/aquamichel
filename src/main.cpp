@@ -28,5 +28,4 @@ void setup() {
 
 void loop() {
  service_loop();
-delay(2000);
 }

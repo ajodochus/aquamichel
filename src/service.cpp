@@ -26,7 +26,6 @@ void service_loop() {
     display_third_line = push_button_state;
 
     display_show_message();
-    watersensor_loop();
 }
 
 
@@ -44,7 +43,9 @@ void timer_update_msg(){
     }
     if (timer.done()) {
         //Serial.println("Timer done!");
+        watersensor_get_percentage();
         countdown_start();
+
     } 
 }
 
