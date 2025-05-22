@@ -4,6 +4,7 @@
 #include "server.h"
 #include "component_push_button.h"
 #include "watersensor.h"
+#include "scale.h"
 
 
 // Function prototype
@@ -68,6 +69,18 @@ void timer_1s_loop(){
         // This block will execute every 1 second
         // Serial.println("1s timer done, restarting.");
         display_first_line = String(server_msg);
+        
+        switch (cycle_display_state) {
+            case 0: // Timer Display
+                display_second_line = "Timer: " + String(service_timer_10s_current);
+                break;
+            case 1: // Watersensor Display
+                display_second_line = "Water: " + String(watersensor_get_percentage()) + "%";
+                break;
+            case 2: // Scale Display
+                display_second_line = "Weight: " + String(scale_current_weight) + "g";
+                break;
+        }
         display_refresh();
     }
 }

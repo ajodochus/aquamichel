@@ -10,7 +10,7 @@ const int PushButton = 15;
 int current_pushbutton_state = LOW;
 String push_button_state = "button released";
 
-static int cycle_display_state = 0; // 0 for Timer, 1 for Water, 2 for Scale
+int cycle_display_state = 0; // 0 for Timer, 1 for Water, 2 for Scale
 
 void component_push_button_setup(){
     pinMode(PushButton, INPUT);
