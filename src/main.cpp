@@ -15,15 +15,11 @@ void setup() {
   Serial.begin(9600);  // Start serial communication at 115200 baud rate
   component_led_setup();
   startWiFiAndServer(ssid, password);
-  countdown_start();
+  timer_10s_start();
   display_setup();
   scale_setup();
   component_push_button_setup();
   watersensor_setup();
-  //scale_tare();
-  //scale_get_weight();
-
-
 }
 
 void loop() {

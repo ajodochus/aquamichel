@@ -8,27 +8,29 @@ const int SENSOR_DRY_VALUE = 0; // Example: Lower value when dry
 const int SENSOR_WET_VALUE = 4095; // Example: Higher value when wet (typical for capacitive)
 
 int g_water_level_raw = 0;
-float g_water_level_percentage = 0.0;
+float watersensor_current_value = 0.0; // Define as a global variable for this file
 
 void watersensor_setup() {
     pinMode(WATERSENSOR_PIN, INPUT);
     Serial.println("Capacitive soil moisture sensor setup. Pin: " + String(WATERSENSOR_PIN));
 }
 
-void watersensor_get_percentage() {
+float watersensor_get_percentage() { // Changed return type to float
     int sensorValue = analogRead(WATERSENSOR_PIN);
     g_water_level_raw = sensorValue;
-    g_water_level_percentage = map(sensorValue, SENSOR_DRY_VALUE, SENSOR_WET_VALUE, 0, 100);
+    watersensor_current_value = map(sensorValue, SENSOR_DRY_VALUE, SENSOR_WET_VALUE, 0, 100);
     // Constrain the percentage to be between 0 and 100
-    if (g_water_level_percentage < 0) {
-        g_water_level_percentage = 0;
-    } else if (g_water_level_percentage > 100) {
-        g_water_level_percentage = 100;
+    if (watersensor_current_value < 0) {
+        watersensor_current_value = 0;
+    } else if (watersensor_current_value > 100) {
+        watersensor_current_value = 100;
     }
 
     Serial.print("Soil Moisture Raw: ");
     Serial.print(g_water_level_raw);
     Serial.print(" | Percentage: ");
-    Serial.print(g_water_level_percentage);
+    Serial.print(watersensor_current_value);
     Serial.println("%");
+
+    return watersensor_current_value; // Added return statement
 }

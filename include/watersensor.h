@@ -2,7 +2,7 @@
 #define WATERSENSOR_H
 
 extern int g_water_level_raw; // Made external
-extern float g_water_level_percentage; // Added for percentage
+extern float watersensor_current_value; // Changed from g_water_level_percentage to watersensor_current_value
 
 /**
  * @brief Initializes the water sensor.

@@ -1,8 +1,8 @@
 #ifndef SERVICE_H
 #define SERVICE_H
-extern int timer_current_time;
-void countdown_start();
-void timer_update_msg();
+extern int service_timer_10s_current;
+void timer_10s_start();
+void timer_10s_loop();
 void service_loop();
 
 #endif
