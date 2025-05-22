@@ -16,6 +16,7 @@ void setup() {
   component_led_setup();
   startWiFiAndServer(ssid, password);
   timer_10s_start();
+  timer_1s_start(); // Start the 1s timer
   display_setup();
   scale_setup();
   component_push_button_setup();

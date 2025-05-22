@@ -25,7 +25,7 @@ void component_push_button_loop(){
         Serial.println("button pressed");
         push_button_state = "button pressed";
         led_turn_on_green();
-        display_second_line = String(service_timer_10s_current);
+        display_second_line = "random(10):  " + String(service_timer_10s_current);
         display_refresh();
     }
     else if (Push_button_state == LOW and current_pushbutton_state == HIGH) // Detects the push button release

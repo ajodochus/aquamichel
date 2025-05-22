@@ -9,15 +9,24 @@
 // Function prototype
 void timer_10s_start();
 void timer_10s_loop();
-unsigned long startTime;
-int countdownTime = 10000; 
+unsigned long startTime; // Consider if this is shared or if each timer needs its own.
+int countdownTime = 10000;
 int service_timer_10s_current = 0;
 Neotimer timer_10_seconds = Neotimer(countdownTime);
+
+// New 1-second timer variables
+void timer_1s_start();
+void timer_1s_loop();
+int countdownTime_1s = 1000; // 1 second
+int service_timer_1s_current = 0;
+Neotimer timer_1_second = Neotimer(countdownTime_1s);
+unsigned long startTime_1s; // Separate start time for 1s timer
 
 
 void service_loop() {
     component_push_button_loop();
     timer_10s_loop();
+    timer_1s_loop(); // Call the 1s timer loop
 }
 
 
@@ -38,6 +47,29 @@ void timer_10s_loop(){
         timer_10s_start();
 
     } 
+}
+
+// New 1-second timer functions
+void timer_1s_start(){
+    timer_1_second.set(countdownTime_1s);
+    timer_1_second.start();
+    startTime_1s = millis(); // Use separate start time
+}
+
+void timer_1s_loop(){
+    if (timer_1_second.waiting()) {
+        service_timer_1s_current = timer_1_second.stop() / 1000; // This will always be 0 or 1
+        timer_1_second.restart();
+        // You might want to do something each second here
+        // For example, Serial.println("1s tick");
+    }
+    if (timer_1_second.done()) {
+        timer_1s_start(); // Restart the timer when done
+        // This block will execute every 1 second
+        // Serial.println("1s timer done, restarting.");
+        display_first_line = String(server_msg);
+        display_refresh();
+    }
 }
 
 
