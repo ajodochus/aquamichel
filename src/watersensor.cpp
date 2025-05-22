@@ -15,7 +15,7 @@ void watersensor_setup() {
     Serial.println("Capacitive soil moisture sensor setup. Pin: " + String(WATERSENSOR_PIN));
 }
 
-float watersensor_get_percentage() { // Changed return type to float
+int watersensor_get_percentage() { // Changed return type to int to match header declaration
     int sensorValue = analogRead(WATERSENSOR_PIN);
     g_water_level_raw = sensorValue;
     watersensor_current_value = map(sensorValue, SENSOR_DRY_VALUE, SENSOR_WET_VALUE, 0, 100);
@@ -32,5 +32,5 @@ float watersensor_get_percentage() { // Changed return type to float
     Serial.print(watersensor_current_value);
     Serial.println("%");
 
-    return watersensor_current_value; // Added return statement
+    return static_cast<int>(watersensor_current_value); // Return int to match declaration
 }

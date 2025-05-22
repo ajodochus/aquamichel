@@ -8,9 +8,11 @@
 #include "index_html.h"
 #include "scale.h"
 #include "component_push_button.h"
+#include "component_display.h"
 // Declare the server object
 AsyncWebServer server(80);
 String server_msg = "initialize server";
+
 
 
 // Optional template processor
@@ -39,7 +41,8 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   Serial.println("WiFi connected!");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-    server_msg = WiFi.localIP().toString();
+  server_msg = WiFi.localIP().toString();
+
 
 
   // Define server routes

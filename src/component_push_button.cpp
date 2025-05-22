@@ -34,7 +34,7 @@ void component_push_button_loop(){
         Serial.println("button released");
         push_button_state = "button released";
         led_turn_on_blue();
-        display_second_line = "";
+        display_second_line = String(watersensor_get_percentage()) + "%";
         display_refresh();
     }
 
