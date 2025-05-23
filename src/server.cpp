@@ -5,11 +5,14 @@
 #include "server.h"
 #include "component_display.h"
 #include "service.h"
-#include "index_html.h"
 #include "scale.h"
 #include "component_push_button.h"
 #include "component_display.h"
 #include "watersensor.h" // Added include for watersensor functions
+#include "html/main_page_html.h"
+#include "html/water_sensor_page_html.h"
+#include "html/scale_page_html.h"
+#include "html/timer_page_html.h"
 // Declare the server object
 AsyncWebServer server(80);
 String server_msg = "initialize server";
@@ -48,7 +51,7 @@ void startWiFiAndServer(const char* ssid, const char* password) {
 
   // Define server routes
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send_P(200, "text/html", index_html, processor);
+    request->send_P(200, "text/html", main_page_html, processor);
   });
   server.on("/watersensor", HTTP_GET, [](AsyncWebServerRequest *request) { // Route for Watersensor Page
     request->send_P(200, "text/html", water_sensor_page_html, processor);
