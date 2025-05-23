@@ -9,6 +9,7 @@
 #include "scale.h"
 #include "component_push_button.h"
 #include "component_display.h"
+#include "watersensor.h" // Added include for watersensor functions
 // Declare the server object
 AsyncWebServer server(80);
 String server_msg = "initialize server";
@@ -63,6 +64,9 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   });
   server.on("/current_weight", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(scale_current_weight));
+  });
+  server.on("/current_water_percentage", HTTP_GET, [](AsyncWebServerRequest *request){ // New endpoint for water sensor data
+    request->send(200, "text/plain", String(watersensor_get_percentage()));
   });
   server.on("/push_button_state", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(push_button_state));
