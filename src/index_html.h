@@ -51,7 +51,7 @@ const char water_sensor_page_html[] PROGMEM = R"rawliteral(
 <body>
   <header><h1>Water Sensor Details</h1></header>
   <div class="container">
-    <p>Current Water Level: <span id="waterValue" class="value">wait, get value from sensor ...</span>%</p>
+    <p>Current Water Level: <span id="waterValue" class="value"></span>%</p>
     <p><a href="/">Back to Main Page</a></p>
   </div>
   <script>
@@ -64,7 +64,7 @@ const char water_sensor_page_html[] PROGMEM = R"rawliteral(
       };
       xhr.open("GET", "/current_water_percentage", true);
       xhr.send();
-    }, 2000); // Update every 2 seconds
+    }, 3000); // Update every 2 seconds
   </script>
 </body>
 </html>
@@ -102,16 +102,29 @@ const char timer_page_html[] PROGMEM = R"rawliteral(
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333; }
     header { background-color: #17a2b8; color: white; padding: 1em 0; text-align: center; }
-    .container { padding: 20px; text-align: center; }
+    .container { padding: 20px; text-align: center; font-size: 1.2em; }
+    .value { font-weight: bold; color: #17a2b8; }
     .container a { color: #007bff; }
   </style>
 </head>
 <body>
   <header><h1>Timer Value Details</h1></header>
   <div class="container">
-    <p>This page will display timer value information.</p>
+    <p>Current Timer Value: <span id="timerValue" class="value">--</span> seconds</p>
     <p><a href="/">Back to Main Page</a></p>
   </div>
+  <script>
+    setInterval(function() {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("timerValue").innerHTML = this.responseText;
+        }
+      };
+      xhr.open("GET", "/current_time", true); // Using existing /current_time endpoint
+      xhr.send();
+    }, 1000); // Update every 2 seconds
+  </script>
 </body>
 </html>
 )rawliteral";
