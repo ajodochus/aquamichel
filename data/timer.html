@@ -1,0 +1,26 @@
+<!DOCTYPE HTML><html>
+<head>
+  <title>Aquamichel - Timer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <header class="timer-header"><h1>Timer Value Details</h1></header>
+  <div class="container">
+    <p>Current Timer Value: <span id="timerValue" class="value">--</span> seconds</p>
+    <p><a href="/">Back to Main Page</a></p>
+  </div>
+  <script>
+    setInterval(function() {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("timerValue").innerHTML = this.responseText;
+        }
+      };
+      xhr.open("GET", "/current_time", true);
+      xhr.send();
+    }, 1000); // Update every 1 second
+  </script>
+</body>
+</html>

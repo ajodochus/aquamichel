@@ -1,4 +1,3 @@
-
 #include <Wire.h>
 #include <SSD1306Wire.h>
 #include <component_display.h>
@@ -26,4 +25,16 @@ void display_refresh(){
   display.drawString(0, 20, display_second_line);
   display.drawString(0, 40, display_third_line);
   display.display();
+}
+
+void display_set_first_line(String text) {
+  display_first_line = text;
+}
+
+void display_set_second_line(String text) {
+  display_second_line = text;
+}
+
+void display_set_third_line(String text) {
+  display_third_line = text;
 }

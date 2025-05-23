@@ -1,0 +1,26 @@
+<!DOCTYPE HTML><html>
+<head>
+  <title>Aquamichel - Water Sensor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <header class="water-header"><h1>Water Sensor Details</h1></header>
+  <div class="container">
+    <p>Current Water Level: <span id="waterValue" class="value"></span>%</p>
+    <p><a href="/">Back to Main Page</a></p>
+  </div>
+  <script>
+    setInterval(function() {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("waterValue").innerHTML = this.responseText;
+        }
+      };
+      xhr.open("GET", "/current_water_percentage", true);
+      xhr.send();
+    }, 3000); // Update every 3 seconds
+  </script>
+</body>
+</html>

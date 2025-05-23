@@ -1,0 +1,26 @@
+<!DOCTYPE HTML><html>
+<head>
+  <title>Aquamichel - Scale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <header class="scale-header"><h1>Scale Value Details</h1></header>
+  <div class="container">
+    <p>Current Scale Value: <span id="scaleValue" class="value">--</span></p>
+    <p><a href="/">Back to Main Page</a></p>
+  </div>
+  <script>
+    setInterval(function() {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("scaleValue").innerHTML = this.responseText;
+        }
+      };
+      xhr.open("GET", "/current_weight", true);
+      xhr.send();
+    }, 2000); // Update every 2 seconds
+  </script>
+</body>
+</html>
