@@ -49,6 +49,9 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send_P(200, "text/html", index_html, processor);
   });
+  server.on("/page2", HTTP_GET, [](AsyncWebServerRequest *request) { // Added route for /page2
+    request->send_P(200, "text/html", page2_html, processor);
+  });
    server.on("/current_time", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(service_timer_10s_current));
   });

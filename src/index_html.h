@@ -12,6 +12,8 @@ const char index_html[] PROGMEM = R"rawliteral(
   <p>Timer: <span id="current_time">...</span></p>
   <p>Weight: <span id="current_weight">...</span></p>
   <p>Push Button State: <span id="push_button_state">...</span></p>
+  
+  <p><a href="/page2">Go to Page 2</a></p> // Link to the new page
 
     <script>
       setInterval(() => {
@@ -35,4 +37,19 @@ const char index_html[] PROGMEM = R"rawliteral(
 </body>
 </html>
 )rawliteral";
+
+// New HTML for Page 2
+const char page2_html[] PROGMEM = R"rawliteral(
+<!DOCTYPE HTML><html>
+<head>
+  <title>Page 2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>hello</h1>
+  <p><a href="/">Go to Page 1</a></p>
+</body>
+</html>
+)rawliteral";
+
 #endif
