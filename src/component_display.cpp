@@ -5,7 +5,8 @@
 #define I2C_SCL 22
 
 SSD1306Wire display(0x3c, I2C_SDA, I2C_SCL); // I2C address 0x3c for 128x64 OLED display
-
+//I2C device found at address 0x20  !
+//I2C device found at address 0x3C  !
 String display_first_line = "first line"; // Placeholder for the first line of text
 String display_second_line = "---"; // Placeholder for the second line of text  
 String display_third_line = ":::"; // Placeholder for the third line of text
