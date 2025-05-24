@@ -3,7 +3,6 @@
 #include "component_display.h" // For display functions
 #include "dht22.h"             // For dht22 functions
 #include "watersensor.h"       // For watersensor functions
-#include "server.h"            // For is_wifi_connected flag
 
 // Define the keymap for Rob Tillaart's I2CKeyPad library.
 // This library typically uses a linear array for the keymap.
@@ -37,6 +36,44 @@ void i2c_keypad_setup() {
     // The library typically assumes a PCF8574 mapping where it scans rows/cols.
     // If your keypad module has a specific mapping, you might need to adjust.
     // This version of the library might not require explicit loadKeyMap if keys are standard matrix on PCF8574
+}
+
+// Forward declaration if i2c_keypad_handle_password_entry is defined after its call
+// For simplicity, we can define it before i2c_keypad_process_menu_key or make it static.
+
+static void i2c_keypad_handle_password_entry() {
+    String entered_keys = "";
+    int press_count = 0;
+
+    display_set_first_line("Enter 4 keys:");
+    display_set_second_line("");
+    display_set_third_line("");
+    display_refresh();
+
+    while (press_count < 4) {
+        char key = 0;
+        // Wait for a new key press
+        while (key == 0) {
+            key = i2c_keypad_get_new_key();
+            delay(50); // Small delay to prevent busy-waiting too aggressively
+        }
+
+        entered_keys += key;
+        display_set_second_line(entered_keys);
+        display_refresh();
+        press_count++;
+    }
+
+    display_set_first_line("Keys entered:");
+    // display_set_second_line(entered_keys); // Already showing
+    display_set_third_line("Done.");
+    display_refresh();
+
+    delay(2000); // Show the final input for a couple of seconds
+
+    // Optionally, clear the display or return to a default state after this
+    // For now, it will just return, and the next service_loop call will update the display
+    // based on cycle_display_state or other logic.
 }
 
 char i2c_keypad_get_key_loop() {
@@ -103,46 +140,33 @@ void i2c_keypad_process_menu_key(char key) {
     Serial.print("Menu key pressed: ");
     Serial.println(key);
     
-    if (is_wifi_connected) { // Only process menu if WiFi is connected
-        switch (key) {
-            case 'A':
-                display_set_first_line("Menu A");
-                display_set_second_line("Hum: " + String(dht22_get_humidity()) + "%");
-                display_set_third_line("Temp: " + String(dht22_get_temperature()) + " C");
-                display_refresh();
-                break;
-            case 'B':
-                display_set_first_line("Menu B");
-                display_set_second_line("Water: " + String(watersensor_get_percentage()) + "%");
-                display_set_third_line(""); // Clear third line
-                display_refresh();
-                break;
-            case 'C':
-                display_set_first_line("enter password");
-                display_set_second_line(""); // Clear second line
-                display_set_third_line("");  // Clear third line
-                display_refresh();
-                break;
-            case '#': // Example: Retain existing '#' functionality or integrate differently
-                display_set_first_line("enter password");
-                display_set_second_line(""); 
-                display_set_third_line("");  
-                display_refresh(); 
-                Serial.println("Password entry mode activated via #.");
-                break;
-            // Add cases for other keys if needed (e.g., 'D', '*', numbers for password entry)
-            default:
-                // Optional: handle other keys, or do nothing
-                // Serial.print("Key "); Serial.print(key); Serial.println(" not assigned to menu.");
-                break;
-        }
-    } else {
-        Serial.println("WiFi not connected. Keypad menu disabled.");
-        // Optionally, display a message on the OLED
-        display_set_first_line(server_msg); // Display current server/WiFi status
-        display_set_second_line("Keypad disabled");
-        display_set_third_line("");
-        display_refresh();
+    switch (key) {
+        case 'A':
+            display_set_first_line("Menu A");
+            display_set_second_line("Hum: " + String(dht22_get_humidity()) + "%");
+            display_set_third_line("Temp: " + String(dht22_get_temperature()) + " C");
+            display_refresh();
+            break;
+        case 'B':
+            display_set_first_line("Menu B");
+            display_set_second_line("Water: " + String(watersensor_get_percentage()) + "%");
+            display_set_third_line(""); // Clear third line
+            display_refresh();
+            break;
+        case 'C':
+            display_set_first_line("Menu C");
+            display_set_second_line(""); // Clear second line
+            display_set_third_line("");  // Clear third line
+            display_refresh();
+            break;
+        case '#': // Handle password entry
+            i2c_keypad_handle_password_entry();
+            break;
+        // Add cases for other keys if needed (e.g., 'D', '*', numbers for password entry)
+        default:
+            // Optional: handle other keys, or do nothing
+            // Serial.print("Key "); Serial.print(key); Serial.println(" not assigned to menu.");
+            break;
     }
 }
 
