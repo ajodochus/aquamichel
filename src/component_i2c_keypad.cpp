@@ -5,6 +5,7 @@
 #include "watersensor.h"       // For watersensor functions
 #include "server.h"            // For is_wifi_connected and server_msg
 #include "scale.h"             // For scale_current_weight
+// #include "component_push_button.h" // No longer needed, cycle_display_state is now in service.cpp
 
 // Define the keymap for Rob Tillaart's I2CKeyPad library.
 // This library typically uses a linear array for the keymap.
@@ -23,6 +24,8 @@ I2CKeyPad keypad(KEYPAD_I2C_ADDRESS, &Wire);
 // Variable to store the last key state to detect changes
 static char last_key_pressed = 0;
 static bool key_was_pressed_in_last_check = false;
+
+extern int cycle_display_state; // Declare cycle_display_state as extern as it's defined in service.cpp
 
 void i2c_keypad_setup() {
     // Wire.begin() should be called once in the main setup() function.
@@ -133,9 +136,7 @@ void i2c_keypad_process_menu_key(char key) {
                 if (current_password_input == CORRECT_PASSWORD) {
                     password_entered_correctly = true;
                     Serial.println("Password accepted. Menu unlocked.");
-                    // Display update will be handled by service.cpp
-                    // Automatically show Menu A (this part of display logic can remain here or move to service.cpp)
-                    // For now, let service.cpp handle the "Menu A" display upon password_entered_correctly = true
+                    cycle_display_state = 0; // Default to Menu A display state
                 } else {
                     Serial.println("Password incorrect.");
                     // Display update will be handled by service.cpp
@@ -148,28 +149,20 @@ void i2c_keypad_process_menu_key(char key) {
         // Menu Mode (password_entered_correctly is true)
         switch (key) {
             case 'A':
-                display_set_first_line(server_msg);
-                display_set_second_line("Menu A: DHT22");
-                display_set_third_line("H:" + String(dht22_get_humidity()) + "% T:" + String(dht22_get_temperature()) + "C");
-                display_refresh();
+                cycle_display_state = 0; // Set state for Menu A
+                // Display update is handled by service.cpp timer_1s_loop
                 break;
             case 'B':
-                display_set_first_line(server_msg);
-                display_set_second_line("Menu B: Water");
-                display_set_third_line("Level: " + String(watersensor_get_percentage()) + "%");
-                display_refresh();
+                cycle_display_state = 1; // Set state for Menu B
+                // Display update is handled by service.cpp timer_1s_loop
                 break;
             case 'C':
-                display_set_first_line(server_msg);
-                display_set_second_line("Menu C: Scale");
-                display_set_third_line("Weight: " + String(scale_current_weight) + "g"); 
-                display_refresh();
+                cycle_display_state = 2; // Set state for Menu C
+                // Display update is handled by service.cpp timer_1s_loop
                 break;
             case 'D': 
-                display_set_first_line(server_msg);
-                display_set_second_line("Menu D: System");
-                display_set_third_line("Status: OK"); 
-                display_refresh();
+                cycle_display_state = 3; // Set state for Menu D
+                // Display update is handled by service.cpp timer_1s_loop
                 break;
             // Keys '*', '0', '#' could be used for other menu functions or to re-lock.
             default:

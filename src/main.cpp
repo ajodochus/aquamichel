@@ -5,7 +5,6 @@
 #include "server.h"
 #include "scale.h"
 #include "config.h"
-#include "component_push_button.h"
 #include "watersensor.h"
 #include "dht22.h" // Add this line
 #include "component_i2c_keypad.h" // Add this for the I2C Keypad
@@ -35,7 +34,6 @@ void setup() {
   //timer_10s_start();
   timer_1s_start(); 
   scale_setup();
-  component_push_button_setup();
   watersensor_setup();
 }
 

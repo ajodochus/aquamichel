@@ -2,7 +2,6 @@
 #include <Arduino.h>
 #include "component_display.h"
 #include "server.h"
-#include "component_push_button.h"
 #include "watersensor.h"
 #include "scale.h"
 #include "dht22.h" // Include DHT22 header for temperature and humidity
@@ -24,9 +23,13 @@ int service_timer_1s_current = 0;
 Neotimer timer_1_second = Neotimer(countdownTime_1s);
 unsigned long startTime_1s; // Separate start time for 1s timer
 
+// Global variable to control display state, now managed by keypad and service.
+// This might be better placed in a central state management if it grows more complex.
+int cycle_display_state = 0; // 0: DHT22 (Menu A), 1: Water (Menu B), 2: Scale (Menu C), 3: System (Menu D)
+
 
 void service_loop() {
-    component_push_button_loop();
+    // component_push_button_loop(); // No longer called
     timer_10s_loop();
     timer_1s_loop(); // Call the 1s timer loop
     dht22_read_values_loop(); 
@@ -103,20 +106,34 @@ void timer_1s_loop(){
                 // Let's refine this: if a menu is active (e.g. after keypad press), 
                 // the button press should perhaps exit the menu or cycle. 
                 // For now, this is the button-cycle display logic.
+                // Since the button is removed, this switch now dictates what is shown based on 'cycle_display_state'
+                // which is set by the keypad.
                 switch (cycle_display_state) {
                     case 0: // DHT22 Sensor Display (Default or after Menu A)
                         display_set_second_line("Menu A: DHT22");
                         display_set_third_line("H:" + String(dht22_get_humidity()) + "% T:" + String(dht22_get_temperature()) + "C");
+                        // led_turn_on_green(); // Example: Set LED for Menu A
                         break;
                     case 1: // Watersensor Display (Menu B)
                         display_set_second_line("Menu B: Water");
                         display_set_third_line("Level: " + String(watersensor_get_percentage()) + "%");
+                        // led_turn_on_blue(); // Example: Set LED for Menu B
                         break;
                     case 2: // Scale Display (Menu C)
                         display_set_second_line("Menu C: Scale");
                         display_set_third_line("Weight: " + String(scale_current_weight) + "g");
+                        // led_turn_on_red(); // Example: Set LED for Menu C
                         break;
-                    // case 3 could be Menu D: System Status, if we want it in the cycle
+                    case 3: // System Display (Menu D)
+                        display_set_second_line("Menu D: System");
+                        display_set_third_line("Status: OK"); 
+                        // Set LED for Menu D if desired
+                        break;
+                    default:
+                        // Default case, could be Menu A or a specific idle screen
+                        display_set_second_line("Menu A: DHT22");
+                        display_set_third_line("H:" + String(dht22_get_humidity()) + "% T:" + String(dht22_get_temperature()) + "C");
+                        break;
                 }
             }
         }
