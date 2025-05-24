@@ -22,3 +22,26 @@ This document outlines the pinout configuration for the Aquamichel ESP32 project
 *   GPIO 36 is an ADC1 channel, which is appropriate for the analog `WATERSENSOR_PIN`.
 *   The I2C pins (21, 22) are the default I2C pins for many ESP32 boards.
 *   Verify that no other components are unintentionally sharing these pins.
+
+## How to Add a New Sensor (Concise Guide)
+
+1.  **Sensor Files (`.h`, `.cpp`):**
+    *   Create `include/new_sensor.h`: Define pins, declare `new_sensor_setup()`, `new_sensor_read_value()`.
+    *   Create `src/new_sensor.cpp`: Implement these functions.
+
+2.  **Main Integration (`src/main.cpp`):**
+    *   In `setup()`: Call `new_sensor_setup()`.
+    *   In `loop()` (or `src/service.cpp` for timed reads): Call `new_sensor_read_value()`.
+
+3.  **Web Data (`src/server.cpp` & `data/`):**
+    *   `server.cpp`: Add endpoint (e.g., `/new_sensor_data`) to return sensor value.
+    *   `data/new_page.html` (or existing): Fetch and display data using JavaScript.
+
+4.  **OLED Display (Optional - `src/component_display.cpp`):**
+    *   Modify `display_update()` to include new sensor data in a display cycle.
+
+5.  **Libraries (`platformio.ini`):**
+    *   Add any required libraries to `lib_deps`.
+
+6.  **Documentation (`Readme.md`):**
+    *   Update the pinout table with the new sensor's pin assignments.
