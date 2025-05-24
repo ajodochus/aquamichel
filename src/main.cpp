@@ -40,13 +40,5 @@ void setup() {
 
 void loop() {
  service_loop();
- dht22_read_values(); 
 
- char key = i2c_keypad_get_key();
- if (key) { // If a key was pressed (key will be non-zero)
-   Serial.print("Keypad input: ");
-   Serial.println(key);
-   // You can add logic here to handle the key press, e.g.:
-   // if (key == 'A') { /* do something */ }
- }
 }

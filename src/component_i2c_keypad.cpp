@@ -38,8 +38,11 @@ char i2c_keypad_get_key() {
         if (keyValue >= 0 && keyValue < (KEYPAD_ROWS * KEYPAD_COLS)) { // Check if the index is valid for our keymap
              // The basic getKey() from this library might return an index 0..15 for a 4x4 keypad.
              // We need to map this index to our actual character keymap.
-            return keys[keyValue]; 
+            //Serial.print("Keypad key index: ");
+            Serial.println(keys[keyValue]);
+            return keys[keyValue];
         }
     }
     return 0; // Return 0 or a specific NO_KEY character if no key is pressed or invalid key
 }
+
