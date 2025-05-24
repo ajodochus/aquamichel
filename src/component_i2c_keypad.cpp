@@ -31,7 +31,7 @@ void i2c_keypad_setup() {
     // This version of the library might not require explicit loadKeyMap if keys are standard matrix on PCF8574
 }
 
-char i2c_keypad_get_key() {
+char i2c_keypad_get_key_loop() {
     // Read the key from the keypad
     if (keypad.isPressed()) {
         int keyValue = keypad.getKey(); // getKey() returns an int (ASCII value)
@@ -39,7 +39,7 @@ char i2c_keypad_get_key() {
              // The basic getKey() from this library might return an index 0..15 for a 4x4 keypad.
              // We need to map this index to our actual character keymap.
             //Serial.print("Keypad key index: ");
-            Serial.println(keys[keyValue]);
+            //Serial.println(keys[keyValue]);
             return keys[keyValue];
         }
     }

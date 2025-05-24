@@ -13,10 +13,10 @@ float current_humidity = 0.0;
 void dht22_setup() {
   dht.begin();
   // Read initial values
-  dht22_read_values();
+  dht22_read_values_loop();
 }
 
-void dht22_read_values() {
+void dht22_read_values_loop() {
   float h = dht.readHumidity();
   float t = dht.readTemperature();
 

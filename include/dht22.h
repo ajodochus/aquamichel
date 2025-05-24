@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 void dht22_setup();
-void dht22_read_values();
+void dht22_read_values_loop();
 float dht22_get_temperature();
 float dht22_get_humidity();
 

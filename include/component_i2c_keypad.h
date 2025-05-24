@@ -27,6 +27,6 @@ extern I2CKeyPad keypad; // Changed from kpd to keypad for clarity with new libr
 void i2c_keypad_setup();
 
 // Function to get the currently pressed key
-char i2c_keypad_get_key();
+char i2c_keypad_get_key_loop();
 
 #endif // COMPONENT_I2C_KEYPAD_H

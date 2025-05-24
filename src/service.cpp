@@ -29,9 +29,8 @@ void service_loop() {
     component_push_button_loop();
     timer_10s_loop();
     timer_1s_loop(); // Call the 1s timer loop
-    dht22_read_values(); 
-    i2c_keypad_get_key(); // Check for key presses on the I2C keypad
-
+    dht22_read_values_loop(); 
+    i2c_keypad_get_key_loop(); // Check for key presses on the I2C keypad
 
 }
 
