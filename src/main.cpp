@@ -31,7 +31,7 @@ void setup() {
   display_setup(); // Setup display (uses I2C address 0x3C as per component_display.cpp)
   i2c_keypad_setup(); // Setup keypad (uses I2C address 0x20 as per component_i2c_keypad.h)
   startWiFiAndServer(ssid, password);
-  timer_10s_start();
+  //timer_10s_start();
   timer_1s_start(); 
   scale_setup();
   component_push_button_setup();

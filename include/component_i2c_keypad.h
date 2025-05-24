@@ -29,4 +29,10 @@ void i2c_keypad_setup();
 // Function to get the currently pressed key
 char i2c_keypad_get_key_loop();
 
+// Function to get a new key press event (returns key only once per press)
+char i2c_keypad_get_new_key();
+
+// Function to process keypad input for menu navigation
+void i2c_keypad_process_menu_key(char key);
+
 #endif // COMPONENT_I2C_KEYPAD_H

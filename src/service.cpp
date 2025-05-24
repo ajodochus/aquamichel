@@ -30,8 +30,11 @@ void service_loop() {
     timer_10s_loop();
     timer_1s_loop(); // Call the 1s timer loop
     dht22_read_values_loop(); 
-    i2c_keypad_get_key_loop(); // Check for key presses on the I2C keypad
-
+   
+    char new_key = i2c_keypad_get_new_key(); // Get new key press events
+    if (new_key) { // If a new key was pressed
+        i2c_keypad_process_menu_key(new_key); // Process it for menu navigation
+    }
 }
 
 
@@ -73,10 +76,10 @@ void timer_1s_loop(){
         // This block will execute every 1 second
         // Serial.println("1s timer done, restarting.");
         display_first_line = String(server_msg);
-        Serial.println("humidity: " + String(dht22_get_humidity()) + "%, temperature: " + String(dht22_get_temperature()) + "°C");
+        //Serial.println("humidity: " + String(dht22_get_humidity()) + "%, temperature: " + String(dht22_get_temperature()) + "°C");
         switch (cycle_display_state) {
             case 0: // Timer Display
-                display_second_line = "Timer: " + String(service_timer_10s_current);
+                //display_second_line = "Timer: " + String(service_timer_10s_current);
                 break;
             case 1: // Watersensor Display
                 display_second_line = "Water: " + String(watersensor_get_percentage()) + "%";
@@ -86,6 +89,9 @@ void timer_1s_loop(){
                 break;
         }
         display_refresh();
+        if (is_wifi_connected) {
+            timer_1_second.stop(); // Restart the 1s timer
+        } 
     }
 }
 

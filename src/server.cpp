@@ -13,6 +13,10 @@
 #include "component_display.h"
 #include "watersensor.h" // Added include for watersensor functions
 #include "dht22.h" // Added include for dht22 functions
+
+// Define and initialize the WiFi connection flag
+bool is_wifi_connected = false;
+
 // Declare the server object
 AsyncWebServer server(80);
 String server_msg = "initialize server";
@@ -32,6 +36,7 @@ String processor(const String& var) {
 void startWiFiAndServer(const char* ssid, const char* password) {
   Serial.println("Connecting to WiFi...");
   server_msg = "Connecting to WiFi...";
+  is_wifi_connected = false; // Set to false when attempting to connect
 
   WiFi.begin(ssid, password);
 
@@ -46,6 +51,7 @@ void startWiFiAndServer(const char* ssid, const char* password) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
   server_msg = WiFi.localIP().toString();
+  is_wifi_connected = true; // Set to true upon successful connection
   Serial.println("DEBUG: Before display_set_first_line (IP Address)"); // DEBUG
 
   if(!SPIFFS.begin(true)){
