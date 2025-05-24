@@ -3,6 +3,8 @@
 #include "component_display.h" // For display functions
 #include "dht22.h"             // For dht22 functions
 #include "watersensor.h"       // For watersensor functions
+#include "server.h"            // For is_wifi_connected and server_msg
+#include "scale.h"             // For scale_current_weight
 
 // Define the keymap for Rob Tillaart's I2CKeyPad library.
 // This library typically uses a linear array for the keymap.
@@ -38,43 +40,18 @@ void i2c_keypad_setup() {
     // This version of the library might not require explicit loadKeyMap if keys are standard matrix on PCF8574
 }
 
+// NEW: Password state variables
+bool password_entered_correctly = false;
+String current_password_input = "";
+const String CORRECT_PASSWORD = "1234";
+
+void i2c_keypad_init_password_state() {
+    password_entered_correctly = false;
+    current_password_input = "";
+}
+
 // Forward declaration if i2c_keypad_handle_password_entry is defined after its call
 // For simplicity, we can define it before i2c_keypad_process_menu_key or make it static.
-
-static void i2c_keypad_handle_password_entry() {
-    String entered_keys = "";
-    int press_count = 0;
-
-    display_set_first_line("Enter 4 keys:");
-    display_set_second_line("");
-    display_set_third_line("");
-    display_refresh();
-
-    while (press_count < 4) {
-        char key = 0;
-        // Wait for a new key press
-        while (key == 0) {
-            key = i2c_keypad_get_new_key();
-            delay(50); // Small delay to prevent busy-waiting too aggressively
-        }
-
-        entered_keys += key;
-        display_set_second_line(entered_keys);
-        display_refresh();
-        press_count++;
-    }
-
-    display_set_first_line("Keys entered:");
-    // display_set_second_line(entered_keys); // Already showing
-    display_set_third_line("Done.");
-    display_refresh();
-
-    delay(2000); // Show the final input for a couple of seconds
-
-    // Optionally, clear the display or return to a default state after this
-    // For now, it will just return, and the next service_loop call will update the display
-    // based on cycle_display_state or other logic.
-}
 
 char i2c_keypad_get_key_loop() {
     // Read the key from the keypad
@@ -137,36 +114,68 @@ void i2c_keypad_process_menu_key(char key) {
         return;
     }
 
-    Serial.print("Menu key pressed: ");
-    Serial.println(key);
-    
-    switch (key) {
-        case 'A':
-            display_set_first_line("Menu A");
-            display_set_second_line("Hum: " + String(dht22_get_humidity()) + "%");
-            display_set_third_line("Temp: " + String(dht22_get_temperature()) + " C");
-            display_refresh();
-            break;
-        case 'B':
-            display_set_first_line("Menu B");
-            display_set_second_line("Water: " + String(watersensor_get_percentage()) + "%");
-            display_set_third_line(""); // Clear third line
-            display_refresh();
-            break;
-        case 'C':
-            display_set_first_line("Menu C");
-            display_set_second_line(""); // Clear second line
-            display_set_third_line("");  // Clear third line
-            display_refresh();
-            break;
-        case '#': // Handle password entry
-            i2c_keypad_handle_password_entry();
-            break;
-        // Add cases for other keys if needed (e.g., 'D', '*', numbers for password entry)
-        default:
-            // Optional: handle other keys, or do nothing
-            // Serial.print("Key "); Serial.print(key); Serial.println(" not assigned to menu.");
-            break;
+    if (!is_wifi_connected) {
+        i2c_keypad_init_password_state(); // Reset password state if WiFi disconnects
+        return; // Do nothing if WiFi is not connected
+    }
+
+    Serial.print("Keypad processing key: "); Serial.println(key);
+
+    if (!password_entered_correctly) {
+        // Password Entry Mode
+        if (key >= '0' && key <= '9' && current_password_input.length() < 4) {
+            current_password_input += key;
+            Serial.print("Password input: "); Serial.println(current_password_input);
+
+            // The display update will be handled by service.cpp based on current_password_input
+
+            if (current_password_input.length() == 4) {
+                if (current_password_input == CORRECT_PASSWORD) {
+                    password_entered_correctly = true;
+                    Serial.println("Password accepted. Menu unlocked.");
+                    // Display update will be handled by service.cpp
+                    // Automatically show Menu A (this part of display logic can remain here or move to service.cpp)
+                    // For now, let service.cpp handle the "Menu A" display upon password_entered_correctly = true
+                } else {
+                    Serial.println("Password incorrect.");
+                    // Display update will be handled by service.cpp
+                    current_password_input = ""; // Clear for re-entry
+                }
+            }
+        } // else: non-digit key or already 4 digits, ignore during password entry phase
+          // (unless it's a specific clear key, which is not implemented here)
+    } else {
+        // Menu Mode (password_entered_correctly is true)
+        switch (key) {
+            case 'A':
+                display_set_first_line(server_msg);
+                display_set_second_line("Menu A: DHT22");
+                display_set_third_line("H:" + String(dht22_get_humidity()) + "% T:" + String(dht22_get_temperature()) + "C");
+                display_refresh();
+                break;
+            case 'B':
+                display_set_first_line(server_msg);
+                display_set_second_line("Menu B: Water");
+                display_set_third_line("Level: " + String(watersensor_get_percentage()) + "%");
+                display_refresh();
+                break;
+            case 'C':
+                display_set_first_line(server_msg);
+                display_set_second_line("Menu C: Scale");
+                display_set_third_line("Weight: " + String(scale_current_weight) + "g"); 
+                display_refresh();
+                break;
+            case 'D': 
+                display_set_first_line(server_msg);
+                display_set_second_line("Menu D: System");
+                display_set_third_line("Status: OK"); 
+                display_refresh();
+                break;
+            // Keys '*', '0', '#' could be used for other menu functions or to re-lock.
+            default:
+                // Optional: handle other keys, or do nothing in menu mode
+                break;
+        }
     }
 }
 

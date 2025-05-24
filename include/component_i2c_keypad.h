@@ -35,4 +35,10 @@ char i2c_keypad_get_new_key();
 // Function to process keypad input for menu navigation
 void i2c_keypad_process_menu_key(char key);
 
+// NEW: Functions and variables for password handling
+extern bool password_entered_correctly; // Flag to indicate if password has been successfully entered
+extern String current_password_input;   // Stores the current digits being entered
+
+void i2c_keypad_init_password_state(); // To reset password state
+
 #endif // COMPONENT_I2C_KEYPAD_H

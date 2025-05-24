@@ -65,34 +65,65 @@ void timer_1s_start(){
 }
 
 void timer_1s_loop(){
-    if (timer_1_second.waiting()) {
-        service_timer_1s_current = timer_1_second.stop() / 1000; // This will always be 0 or 1
-        timer_1_second.restart();
-        // You might want to do something each second here
-        // For example, Serial.println("1s tick");
-    }
-    if (timer_1_second.done()) {
-        timer_1s_start(); // Restart the timer when done
-        // This block will execute every 1 second
-        // Serial.println("1s timer done, restarting.");
-        display_first_line = String(server_msg);
-        //Serial.println("humidity: " + String(dht22_get_humidity()) + "%, temperature: " + String(dht22_get_temperature()) + "°C");
-        switch (cycle_display_state) {
-            case 0: // Timer Display
-                //display_second_line = "Timer: " + String(service_timer_10s_current);
-                break;
-            case 1: // Watersensor Display
-                display_second_line = "Water: " + String(watersensor_get_percentage()) + "%";
-                break;
-            case 2: // Scale Display
-                display_second_line = "Weight: " + String(scale_current_weight) + "g";
-                break;
+    if (timer_1_second.done()) { // Check if the timer is done
+        timer_1_second.restart(); // Restart the timer for the next 1-second interval
+
+        display_set_first_line(server_msg); // Always show server_msg (IP or status) on the first line
+
+        if (!is_wifi_connected) {
+            display_set_second_line("Keypad Locked");
+            display_set_third_line("WiFi Connecting...");
+            i2c_keypad_init_password_state(); // Reset password state if WiFi disconnects
+        } else {
+            // WiFi is connected
+            if (!password_entered_correctly) {
+                display_set_second_line("Enter Password:");
+                display_set_third_line(current_password_input); // Show current password input
+            } else {
+                // WiFi connected and password entered correctly
+                // Normal menu display logic (cycled by button or selected by keypad)
+                // If a keypad menu was selected, i2c_keypad_process_menu_key already updated the display.
+                // If no keypad menu is active, cycle through default displays.
+                // For now, we'll rely on the push button to cycle or keypad to select a menu.
+                // If a menu was just selected via keypad, its content is already on display.
+                // If we want a default cycling display after password entry, that logic goes here.
+                // For now, let's assume the keypad selection is sticky or button cycles.
+
+                // This switch handles the button-based cycling display when a menu is not actively forced by keypad.
+                // We need to ensure this doesn't override a menu selected by the keypad immediately.
+                // A simple way is to only cycle if no specific menu was recently selected.
+                // However, the current structure has i2c_keypad_process_menu_key directly setting the display.
+                // So, this switch will effectively be the "default" display when no keypad key is pressed.
+
+                // If a menu item was selected by keypad, it will show. 
+                // If the push button is pressed, it will cycle through these items.
+                // If password was just entered, Menu A is shown by i2c_keypad_process_menu_key.
+                // This section will take over if the button is pressed or if no keypad interaction occurs for a while (not implemented yet)
+
+                // Let's refine this: if a menu is active (e.g. after keypad press), 
+                // the button press should perhaps exit the menu or cycle. 
+                // For now, this is the button-cycle display logic.
+                switch (cycle_display_state) {
+                    case 0: // DHT22 Sensor Display (Default or after Menu A)
+                        display_set_second_line("Menu A: DHT22");
+                        display_set_third_line("H:" + String(dht22_get_humidity()) + "% T:" + String(dht22_get_temperature()) + "C");
+                        break;
+                    case 1: // Watersensor Display (Menu B)
+                        display_set_second_line("Menu B: Water");
+                        display_set_third_line("Level: " + String(watersensor_get_percentage()) + "%");
+                        break;
+                    case 2: // Scale Display (Menu C)
+                        display_set_second_line("Menu C: Scale");
+                        display_set_third_line("Weight: " + String(scale_current_weight) + "g");
+                        break;
+                    // case 3 could be Menu D: System Status, if we want it in the cycle
+                }
+            }
         }
         display_refresh();
-        if (is_wifi_connected) {
-            timer_1_second.stop(); // Restart the 1s timer
-        } 
-    }
+    } 
+    // The .waiting() part of Neotimer is for checking if it's running but not yet done.
+    // We only need to act when .done() is true for a periodic timer.
 }
 
 
