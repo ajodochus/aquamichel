@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DHT22 Sensor Data</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="topnav">
+        <a href="/">Home</a>
+        <a href="/watersensor.html">Water Sensor</a>
+        <a href="/scale.html">Scale</a>
+        <a class="active" href="/dht22.html">DHT22</a>
+        <a href="/timer.html">Timer</a>
+    </div>
+
+    <div class="content">
+        <h2>DHT22 Sensor Data</h2>
+        <p>Current Temperature: <span id="temperature">Loading...</span> &deg;C</p>
+        <p>Current Humidity: <span id="humidity">Loading...</span> %</p>
+    </div>
+
+    <script>
+        function fetchTemperature() {
+            fetch('/current_temperature')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('temperature').innerText = data;
+                })
+                .catch(error => console.error('Error fetching temperature:', error));
+        }
+
+        function fetchHumidity() {
+            fetch('/current_humidity')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('humidity').innerText = data;
+                })
+                .catch(error => console.error('Error fetching humidity:', error));
+        }
+
+        setInterval(fetchTemperature, 2000);
+        setInterval(fetchHumidity, 2000);
+
+        window.onload = () => {
+            fetchTemperature();
+            fetchHumidity();
+        };
+    </script>
+</body>
+</html>

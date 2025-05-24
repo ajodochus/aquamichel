@@ -12,6 +12,7 @@
 #include "component_push_button.h"
 #include "component_display.h"
 #include "watersensor.h" // Added include for watersensor functions
+#include "dht22.h" // Added include for dht22 functions
 // Declare the server object
 AsyncWebServer server(80);
 String server_msg = "initialize server";
@@ -71,6 +72,10 @@ void startWiFiAndServer(const char* ssid, const char* password) {
     request->send(SPIFFS, "/timer.html", "text/html");
   });
 
+  server.on("/dht22.html", HTTP_GET, [](AsyncWebServerRequest *request) { 
+    request->send(SPIFFS, "/dht22.html", "text/html");
+  });
+
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
@@ -89,6 +94,14 @@ void startWiFiAndServer(const char* ssid, const char* password) {
 
   server.on("/push_button_state", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(200, "text/plain", String(push_button_state));
+  });
+
+  server.on("/current_temperature", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", String(dht22_get_temperature()));
+  });
+
+  server.on("/current_humidity", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "text/plain", String(dht22_get_humidity()));
   });
 
   server.begin();
