@@ -5,6 +5,7 @@
 #include "component_push_button.h"
 #include "watersensor.h"
 #include "scale.h"
+#include "dht22.h" // Include DHT22 header for temperature and humidity
 
 
 // Function prototype
@@ -69,7 +70,7 @@ void timer_1s_loop(){
         // This block will execute every 1 second
         // Serial.println("1s timer done, restarting.");
         display_first_line = String(server_msg);
-        
+        Serial.println("humidity: " + String(dht22_get_humidity()) + "%, temperature: " + String(dht22_get_temperature()) + "°C");
         switch (cycle_display_state) {
             case 0: // Timer Display
                 display_second_line = "Timer: " + String(service_timer_10s_current);
